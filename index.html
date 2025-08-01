@@ -332,6 +332,29 @@
                 height: 56px;
                 font-size: 10px;
             }
+            
+            /* 手牌区域移动端优化 - 两排显示 */
+            .hand-area {
+                height: 160px; /* 增加高度以容纳两排 */
+                padding: 5px;
+            }
+            
+            .cards-container {
+                flex-wrap: wrap;
+                justify-content: center;
+                align-content: flex-start;
+                max-height: 150px;
+                overflow-y: auto;
+                overflow-x: hidden;
+                gap: 3px;
+                padding: 5px;
+            }
+            
+            /* 确保每排最多显示合适数量的牌 */
+            .cards-container .card {
+                flex: 0 0 auto;
+                margin: 1px;
+            }
         }
     </style>
 </head>
