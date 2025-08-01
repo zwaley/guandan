@@ -333,27 +333,30 @@
                 font-size: 10px;
             }
             
-            /* 手牌区域移动端优化 - 两排显示 */
+            /* 手牌区域移动端优化 - 多排显示 */
             .hand-area {
-                height: 160px; /* 增加高度以容纳两排 */
-                padding: 5px;
+                height: 280px !important; /* 增加高度以容纳四排 */
+                padding: 5px !important;
             }
             
             .cards-container {
-                flex-wrap: wrap;
-                justify-content: center;
-                align-content: flex-start;
-                max-height: 150px;
-                overflow-y: auto;
-                overflow-x: hidden;
-                gap: 3px;
-                padding: 5px;
+                flex-wrap: wrap !important;
+                justify-content: center !important;
+                align-content: flex-start !important;
+                max-height: 270px !important;
+                overflow-y: visible !important;
+                overflow-x: hidden !important;
+                gap: 3px !important;
+                padding: 5px !important;
+                display: flex !important;
             }
             
             /* 确保每排最多显示合适数量的牌 */
             .cards-container .card {
-                flex: 0 0 auto;
-                margin: 1px;
+                flex: 0 0 auto !important;
+                margin: 1px !important;
+                width: 40px !important;
+                height: 56px !important;
             }
         }
     </style>
