@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>掼蛋单机版</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #1B5E20, #2E7D32);
+            color: white;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-screen {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            height: 100vh;
+            padding: 50px 20px;
+        }
+
+        .game-screen {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .title {
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .title h1 {
+            font-size: 48px;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .title p {
+            font-size: 18px;
+            color: #E8F5E8;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 80%;
+            max-width: 300px;
+        }
+
+        .menu-button {
+            background: #4CAF50;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .menu-button:hover {
+            background: #66BB6A;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .version {
+            color: #A5D6A7;
+            font-size: 14px;
+        }
+
+        .top-bar {
+            background: #2E7D32;
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-button {
+            background: #4CAF50;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .game-info {
+            font-size: 14px;
+        }
+
+        .game-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .game-table {
+            width: 90%;
+            height: 60%;
+            position: relative;
+            max-width: 600px;
+            max-height: 400px;
+        }
+
+        .player-info {
+            position: absolute;
+            background: #4CAF50;
+            padding: 10px;
+            border-radius: 10px;
+            border: 2px solid #2E7D32;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .player-top {
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .player-left {
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .player-right {
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .current-player {
+            border-color: #FFD700;
+            background: #66BB6A;
+        }
+
+        .center-area {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 80px;
+            background: rgba(46, 125, 50, 0.3);
+            border: 1px solid #4CAF50;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .hand-area {
+            height: 120px;
+            background: #2E7D32;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding: 0 10px;
+        }
+
+        .card {
+            width: 50px;
+            height: 70px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card.selected {
+            transform: translateY(-10px);
+            border-color: #FFD700;
+            border-width: 2px;
+        }
+
+        .card.red {
+            color: #FF0000;
+        }
+
+        .controls-area {
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .control-button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .play-button {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .pass-button {
+            background: #FF9800;
+            color: white;
+        }
+
+        .control-button:disabled {
+            background: #CCCCCC;
+            color: #999999;
+            cursor: not-allowed;
+        }
+
+        .selected-info {
+            color: white;
+            font-size: 14px;
+        }
+
+        /* 中央出牌区域样式 */
+        .center-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+            padding: 10px;
+        }
+
+        .last-play-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .last-play-text {
+            color: white;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .last-play-cards {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .center-card {
+            width: 40px;
+            height: 56px;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2px;
+            color: black;
+            font-weight: bold;
+            font-size: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .center-card.red {
+            color: #FF0000;
+        }
+
+        @media (max-width: 768px) {
+            .title h1 {
+                font-size: 36px;
+            }
+            
+            .menu-button {
+                font-size: 16px;
+                padding: 12px 30px;
+            }
+            
+            .card {
+                width: 40px;
+                height: 56px;
+                font-size: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 主菜单 -->
+        <div id="menuScreen" class="menu-screen">
+            <div class="title">
+                <h1>掼蛋</h1>
+                <p>单机版</p>
+            </div>
+            
+            <div class="menu-buttons">
+                <button class="menu-button" onclick="startGame()">开始游戏</button>
+                <button class="menu-button" onclick="showRules()">游戏规则</button>
+                <button class="menu-button" onclick="showSettings()">设置</button>
+                <button class="menu-button" onclick="showAbout()">关于</button>
+            </div>
+            
+            <div class="version">
+                <p>版本 1.0.0</p>
+            </div>
+        </div>
+
+        <!-- 游戏界面 -->
+        <div id="gameScreen" class="game-screen">
+            <div class="top-bar">
+                <button class="back-button" onclick="backToMenu()">返回</button>
+                <div class="game-info">
+                    当前等级: <span id="currentLevel">2</span> | 回合: <span id="currentTurn">1</span>
+                </div>
+            </div>
+            
+            <div class="game-area">
+                <div class="game-table">
+                    <!-- AI玩家信息 -->
+                    <div class="player-info player-top" id="player2">
+                        <div>AI 2</div>
+                        <div id="player2Cards">27 张牌</div>
+                    </div>
+                    
+                    <div class="player-info player-left" id="player3">
+                        <div>AI 3</div>
+                        <div id="player3Cards">27 张牌</div>
+                    </div>
+                    
+                    <div class="player-info player-right" id="player1">
+                        <div>AI 1</div>
+                        <div id="player1Cards">27 张牌</div>
+                    </div>
+                    
+                    <!-- 中央出牌区域 -->
+                    <div class="center-area">
+                        <div id="lastPlayInfo">等待出牌...</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 玩家手牌 -->
+            <div class="hand-area">
+                <div class="cards-container" id="playerHand">
+                    <!-- 手牌将通过JavaScript动态生成 -->
+                </div>
+            </div>
+            
+            <!-- 控制按钮 -->
+            <div class="controls-area">
+                <button class="control-button pass-button" onclick="passCards()" id="passBtn">过牌</button>
+                <div class="selected-info">
+                    已选择 <span id="selectedCount">0</span> 张牌
+                </div>
+                <button class="control-button play-button" onclick="playCards()" id="playBtn">出牌</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
